@@ -1,72 +1,72 @@
-# DOLA - Robot Asisten AI Ekspresif
+# DOLA - Expressive AI Robot Assistant
 
-DOLA adalah robot AI ekspresif berbasis ESP32. Fitur: voice assistant (Whisper+GPT+TTS), 19 ekspresi wajah OLED, deteksi gerakan & sentuhan, 7 game (Tamagotchi Ikan, Quiz, Simon Says, dll), jam NTP, timer, memory percakapan, OTA firmware update, dan auto-save ke NVS/SPIFFS.
+DOLA is an expressive AI robot based on ESP32. Features: voice assistant (Whisper+GPT+TTS), 19 OLED facial expressions, motion & touch detection, 7 interactive games (Fish Tamagotchi, Quiz, Simon Says, etc.), NTP clock, timer, conversation memory, OTA firmware update, and auto-save to NVS/SPIFFS.
 
 ---
 
-## Daftar Isi
+## Table of Contents
 
-- [Fitur](#fitur)
-- [Hardware yang Dibutuhkan](#hardware-yang-dibutuhkan)
+- [Features](#features)
+- [Hardware Requirements](#hardware-requirements)
 - [Wiring Diagram](#wiring-diagram)
-- [Software & Library](#software--library)
-- [Instalasi & Setup](#instalasi--setup)
-- [Konfigurasi API](#konfigurasi-api)
+- [Software & Libraries](#software--libraries)
+- [Installation & Setup](#installation--setup)
+- [API Configuration](#api-configuration)
 - [Upload SPIFFS (Sound Files)](#upload-spiffs-sound-files)
-- [Cara Penggunaan](#cara-penggunaan)
-- [Sistem Menu & Navigasi](#sistem-menu--navigasi)
-- [Game: Tamagotchi Ikan](#game-tamagotchi-ikan)
+- [How to Use](#how-to-use)
+- [Menu System & Navigation](#menu-system--navigation)
+- [Game: Fish Tamagotchi](#game-fish-tamagotchi)
 - [OTA Update](#ota-update)
-- [Struktur File](#struktur-file)
+- [File Structure](#file-structure)
 - [Troubleshooting](#troubleshooting)
 - [Power Supply](#power-supply)
 
 ---
 
-## Fitur
+## Features
 
-- **Voice Assistant AI** — Ngobrol pakai suara dengan pipeline STT (Whisper) → AI Chat (GPT-4o-mini) → TTS (Nova)
-- **19 Ekspresi Wajah** — Pixel art di OLED: idle, happy, sad, angry, scared, dizzy, thinking, listening, speaking, sleepy, surprised, confused, uncomfortable, love, connecting, AP mode, blink, thinking_2, speaking_2
-- **Deteksi Gerakan** — Diguncang = pusing, diangkat = takut/marah, dimiringkan = tidak nyaman
-- **Touch Sensor** — Tap, double tap, hold untuk navigasi dan interaksi
-- **7 Game Interaktif:**
-  1. Tebak Angka (Voice)
-  2. Simon Says (Sensor Gerak)
-  3. Shake Challenge (Sensor Gerak)
+- **AI Voice Assistant** — Talk using voice with full pipeline: STT (Whisper) → AI Chat (GPT-4o-mini) → TTS (Nova)
+- **19 Facial Expressions** — Pixel art on OLED: idle, happy, sad, angry, scared, dizzy, thinking, listening, speaking, sleepy, surprised, confused, uncomfortable, love, connecting, AP mode, blink, thinking_2, speaking_2
+- **Motion Detection** — Shake = dizzy, lift = scared/angry, tilt = uncomfortable
+- **Touch Sensor** — Tap, double tap, hold for navigation and interaction
+- **7 Interactive Games:**
+  1. Guess the Number (Voice)
+  2. Simon Says (Motion Sensor)
+  3. Shake Challenge (Motion Sensor)
   4. Quiz Trivia (Voice + AI)
-  5. Batu Gunting Kertas (Voice)
+  5. Rock Paper Scissors (Voice)
   6. Random Jokes (AI + TTS)
-  7. Tamagotchi Ikan (Touch + Sensor) — Pet virtual dengan evolusi, save system, dan gravestone
-- **Jam Digital** — NTP sync (WIB/UTC+7) dengan nama hari & bulan Indonesia
-- **Countdown Timer** — 1-60 menit dengan alarm suara
-- **Conversation Memory** — Menyimpan 20 pesan terakhir ke SPIFFS, bertahan saat restart
-- **WiFi Provisioning** — Setup WiFi via AP mode + web portal
-- **OTA Firmware Update** — Update firmware & SPIFFS via web dashboard browser
-- **Volume Control** — Software volume 0-150% (dengan boost)
-- **Expression Sounds** — Setiap ekspresi bisa memicu file WAV dari SPIFFS
-- **Auto-Save** — Semua data tersimpan di NVS/SPIFFS, aman saat power off
+  7. Fish Tamagotchi (Touch + Sensor) — Virtual pet with evolution, save system, and gravestone
+- **Digital Clock** — NTP synced (WIB/UTC+7) with Indonesian day & month names
+- **Countdown Timer** — 1-60 minutes with audio alarm
+- **Conversation Memory** — Stores last 20 messages to SPIFFS, persists across restarts
+- **WiFi Provisioning** — WiFi setup via AP mode + beautiful web portal
+- **OTA Firmware Update** — Update firmware & SPIFFS via browser web dashboard
+- **Volume Control** — Software volume 0-150% (with boost capability)
+- **Expression Sounds** — Each expression can trigger a WAV file from SPIFFS
+- **Auto-Save** — All data stored in NVS/SPIFFS, safe during power off
 
 ---
 
-## Hardware yang Dibutuhkan
+## Hardware Requirements
 
-| Komponen | Spesifikasi | Jumlah | Keterangan |
-|----------|-------------|--------|------------|
-| ESP32 DevKit V1 | 38 pin, 4MB Flash | 1 | Otak utama |
-| INMP441 | I2S MEMS Microphone | 1 | Input suara |
-| MAX98357A | I2S DAC + Amplifier | 1 | Output suara |
-| Speaker | 3W 4Ohm / 8Ohm | 1 | Untuk audio output |
-| OLED SSD1306 | 0.96" 128x64 I2C | 1 | Display wajah & UI |
-| ADXL345 | 3-Axis Accelerometer I2C | 1 | Deteksi gerakan |
-| TTP223 | Capacitive Touch Sensor | 1 | Input sentuh |
-| Breadboard / PCB | - | 1 | Untuk rangkaian |
-| Kabel Jumper | Male-Male, Male-Female | ~20 | Koneksi antar komponen |
-| Power Supply | 5V 1A minimum | 1 | USB / Baterai |
+| Component | Specification | Qty | Notes |
+|-----------|---------------|-----|-------|
+| ESP32 DevKit V1 | 38 pin, 4MB Flash | 1 | Main controller |
+| INMP441 | I2S MEMS Microphone | 1 | Voice input |
+| MAX98357A | I2S DAC + Amplifier | 1 | Audio output |
+| Speaker | 3W 4Ohm / 8Ohm | 1 | For audio playback |
+| OLED SSD1306 | 0.96" 128x64 I2C | 1 | Face display & UI |
+| ADXL345 | 3-Axis Accelerometer I2C | 1 | Motion detection |
+| TTP223 | Capacitive Touch Sensor | 1 | Touch input |
+| Breadboard / PCB | - | 1 | Circuit assembly |
+| Jumper Wires | Male-Male, Male-Female | ~20 | Component connections |
+| Power Supply | 5V 1A minimum | 1 | USB / Battery |
 
-### Opsional:
-- Casing 3D print atau akrilik
-- Baterai 18650 + TP4056 + Boost converter 5V (untuk portable)
-- Tombol power on/off
+### Optional:
+- 3D printed or acrylic case
+- 18650 battery + TP4056 + 5V Boost converter (for portable use)
+- Power on/off switch
 
 ---
 
@@ -74,8 +74,8 @@ DOLA adalah robot AI ekspresif berbasis ESP32. Fitur: voice assistant (Whisper+G
 
 ### INMP441 Microphone → ESP32 (I2S Port 0)
 
-| INMP441 Pin | ESP32 Pin | Keterangan |
-|-------------|-----------|------------|
+| INMP441 Pin | ESP32 Pin | Description |
+|-------------|-----------|-------------|
 | VDD | 3.3V | Power |
 | GND | GND | Ground |
 | SCK | GPIO 26 | Serial Clock |
@@ -85,84 +85,84 @@ DOLA adalah robot AI ekspresif berbasis ESP32. Fitur: voice assistant (Whisper+G
 
 ### MAX98357A Speaker → ESP32 (I2S Port 1)
 
-| MAX98357 Pin | ESP32 Pin | Keterangan |
-|--------------|-----------|------------|
+| MAX98357 Pin | ESP32 Pin | Description |
+|--------------|-----------|-------------|
 | VIN | 5V | Power |
 | GND | GND | Ground |
 | BCLK | GPIO 27 | Bit Clock |
 | LRC | GPIO 14 | Left/Right Clock |
 | DIN | GPIO 12 | Data In |
-| GAIN | - | Biarkan floating (15dB) atau hubungkan ke GND (9dB) |
+| GAIN | - | Leave floating (15dB) or connect to GND (9dB) |
 
 ### OLED SSD1306 → ESP32 (I2C)
 
-| OLED Pin | ESP32 Pin | Keterangan |
-|----------|-----------|------------|
+| OLED Pin | ESP32 Pin | Description |
+|----------|-----------|-------------|
 | VCC | 3.3V | Power |
 | GND | GND | Ground |
 | SDA | GPIO 21 | I2C Data |
 | SCL | GPIO 22 | I2C Clock |
 
-Alamat I2C: `0x3C`
+I2C Address: `0x3C`
 
 ### ADXL345 Accelerometer → ESP32 (I2C)
 
-| ADXL345 Pin | ESP32 Pin | Keterangan |
-|-------------|-----------|------------|
+| ADXL345 Pin | ESP32 Pin | Description |
+|-------------|-----------|-------------|
 | VCC | 3.3V | Power |
 | GND | GND | Ground |
-| SDA | GPIO 21 | I2C Data (shared dengan OLED) |
-| SCL | GPIO 22 | I2C Clock (shared dengan OLED) |
+| SDA | GPIO 21 | I2C Data (shared with OLED) |
+| SCL | GPIO 22 | I2C Clock (shared with OLED) |
 | CS | 3.3V | High = I2C mode |
 | SDO | GND | Address = 0x53 |
 
-Alamat I2C: `0x53`
+I2C Address: `0x53`
 
 ### TTP223 Touch Sensor → ESP32
 
-| TTP223 Pin | ESP32 Pin | Keterangan |
-|------------|-----------|------------|
+| TTP223 Pin | ESP32 Pin | Description |
+|------------|-----------|-------------|
 | VCC | 3.3V | Power |
 | GND | GND | Ground |
 | SIG/OUT | GPIO 4 (Touch0) | Signal output |
 
 ---
 
-## Software & Library
+## Software & Libraries
 
 ### Arduino IDE Setup:
 
-1. **Install Arduino IDE** (versi 1.8.x atau 2.x)
-2. **Tambah ESP32 Board Manager:**
-   - Buka File → Preferences
-   - Di "Additional Board Manager URLs", tambahkan:
+1. **Install Arduino IDE** (version 1.8.x or 2.x)
+2. **Add ESP32 Board Manager:**
+   - Open File → Preferences
+   - In "Additional Board Manager URLs", add:
      ```
      https://raw.githubusercontent.com/espressif/arduino-esp32/gh-pages/package_esp32_index.json
      ```
-   - Buka Tools → Board → Board Manager → cari "esp32" → Install
+   - Open Tools → Board → Board Manager → search "esp32" → Install
 
-3. **Pilih Board:**
+3. **Select Board:**
    - Tools → Board → ESP32 Arduino → "ESP32 Dev Module"
 
-4. **Settings Board:**
+4. **Board Settings:**
    - Upload Speed: 921600
    - CPU Frequency: 240MHz
    - Flash Frequency: 80MHz
    - Flash Mode: QIO
    - Flash Size: 4MB (32Mb)
    - Partition Scheme: Default 4MB with spiffs (1.2MB APP/1.5MB SPIFFS)
-   - PSRAM: Disabled (kecuali board kamu punya PSRAM)
+   - PSRAM: Disabled (unless your board has PSRAM)
 
-### Library yang Dibutuhkan:
+### Required Libraries:
 
 Install via Arduino IDE → Sketch → Include Library → Manage Libraries:
 
-| Library | Versi | Keterangan |
-|---------|-------|------------|
+| Library | Version | Description |
+|---------|---------|-------------|
 | Adafruit GFX Library | ≥1.11.0 | Graphics primitives |
 | Adafruit SSD1306 | ≥2.5.0 | OLED driver |
 | Adafruit ADXL345 | ≥1.3.0 | Accelerometer driver |
-| Adafruit Unified Sensor | ≥1.1.0 | Dependency untuk ADXL345 |
+| Adafruit Unified Sensor | ≥1.1.0 | Dependency for ADXL345 |
 | ArduinoJson | ≥6.21.0 | JSON parsing |
 | WiFi | (built-in ESP32) | WiFi connectivity |
 | WebServer | (built-in ESP32) | HTTP server |
@@ -173,26 +173,26 @@ Install via Arduino IDE → Sketch → Include Library → Manage Libraries:
 
 ---
 
-## Instalasi & Setup
+## Installation & Setup
 
-### Langkah 1: Clone Repository
+### Step 1: Clone Repository
 
 ```bash
 git clone https://github.com/Ramadanil11/delly_robot_assistant.git
 cd delly_robot_assistant
 ```
 
-### Langkah 2: Buka di Arduino IDE
+### Step 2: Open in Arduino IDE
 
-Buka file `delly_robot.ino` di Arduino IDE.
+Open the file `delly_robot.ino` in Arduino IDE.
 
-### Langkah 3: Install Library
+### Step 3: Install Libraries
 
-Install semua library yang tercantum di bagian [Software & Library](#software--library).
+Install all libraries listed in the [Software & Libraries](#software--libraries) section.
 
-### Langkah 4: Konfigurasi API Key
+### Step 4: Configure API Key
 
-Edit file `delly_robot.ino`, cari bagian ini dan ganti dengan API key kamu sendiri:
+Edit `delly_robot.ino`, find this section and replace with your own API key:
 
 ```cpp
 const char* AI_API_KEY = "YOUR_API_KEY_HERE";
@@ -201,166 +201,166 @@ const char* CHAT_ENDPOINT = "https://api.enowx.com/v1/chat/completions";
 const char* TTS_ENDPOINT = "https://api.enowx.com/v1/audio/speech";
 ```
 
-### Langkah 5: Upload Firmware
+### Step 5: Upload Firmware
 
-1. Hubungkan ESP32 ke komputer via USB
-2. Pilih port COM yang benar di Tools → Port
-3. Klik Upload (→)
-4. Tunggu sampai selesai
+1. Connect ESP32 to computer via USB
+2. Select the correct COM port in Tools → Port
+3. Click Upload (→)
+4. Wait until complete
 
-### Langkah 6: Setup WiFi
+### Step 6: WiFi Setup
 
-1. Setelah upload, Dola akan masuk **AP Mode**
-2. Di HP/laptop, connect ke WiFi: `Dola-Setup` (password: `dola1234`)
-3. Buka browser, akses `192.168.4.1`
-4. Pilih WiFi rumah kamu dan masukkan password
-5. Dola akan restart dan connect ke WiFi
+1. After upload, DOLA enters **AP Mode**
+2. On your phone/laptop, connect to WiFi: `Dola-Setup` (password: `dola1234`)
+3. Open browser, navigate to `192.168.4.1`
+4. Select your home WiFi and enter the password
+5. DOLA will restart and connect to your WiFi
 
-### Langkah 7: Selesai!
+### Step 7: Done!
 
-Dola siap digunakan. Coba bicara ke arah mikrofon untuk mulai ngobrol.
+DOLA is ready to use. Try speaking towards the microphone to start chatting.
 
 ---
 
-## Konfigurasi API
+## API Configuration
 
-DOLA menggunakan API yang kompatibel dengan format OpenAI untuk STT, Chat, dan TTS.
+DOLA uses OpenAI-compatible APIs for STT, Chat, and TTS.
 
-### Endpoint yang Digunakan:
+### Endpoints Used:
 
-| Fungsi | Endpoint | Model |
-|--------|----------|-------|
+| Function | Endpoint | Model |
+|----------|----------|-------|
 | Speech-to-Text | `/v1/audio/transcriptions` | whisper-1 |
-| Chat AI | `/v1/chat/completions` | gpt-4o-mini |
+| AI Chat | `/v1/chat/completions` | gpt-4o-mini |
 | Text-to-Speech | `/v1/audio/speech` | tts-1 (voice: nova) |
 
-### Cara Mendapatkan API Key:
+### Getting an API Key:
 
-1. Daftar di provider API yang kompatibel OpenAI
-2. Generate API key
-3. Masukkan ke variabel `AI_API_KEY` di code
+1. Register at an OpenAI-compatible API provider
+2. Generate an API key
+3. Insert it into the `AI_API_KEY` variable in the code
 
-### Mengubah Kepribadian Dola:
+### Changing DOLA's Personality:
 
-Edit variabel `dolaPersonality` di `delly_robot.ino`:
+Edit the `dolaPersonality` variable in `delly_robot.ino`:
 
 ```cpp
-String dolaPersonality = "Kamu adalah Dola, robot asisten kecil yang lucu...";
+String dolaPersonality = "You are Dola, a cute and expressive little robot assistant...";
 ```
 
-Kamu bisa ubah kepribadian, bahasa, atau gaya bicara Dola sesuai keinginan.
+You can customize the personality, language, or speaking style as you wish.
 
 ---
 
 ## Upload SPIFFS (Sound Files)
 
-DOLA menggunakan file WAV di SPIFFS untuk suara ekspresi dan welcome sound.
+DOLA uses WAV files stored in SPIFFS for expression sounds and welcome audio.
 
-### Format File WAV:
+### WAV File Format:
 - Format: PCM WAV
-- Sample Rate: 16000Hz atau 22050Hz
+- Sample Rate: 16000Hz or 22050Hz
 - Bit Depth: 16-bit
-- Channel: Mono (1 channel)
-- Ukuran: Maksimal total ~1.5MB (limit SPIFFS)
+- Channels: Mono (1 channel)
+- Total Size: Maximum ~1.5MB (SPIFFS limit)
 
-### Daftar File Sound (Opsional):
+### Sound File List (Optional):
 
-Letakkan file-file ini di folder `data/`:
+Place these files in the `data/` folder:
 
 ```
 data/
-├── welcome.wav        → Suara saat pertama nyala
-├── idle.wav           → Suara idle (sesekali)
-├── happy.wav          → Suara senang
-├── sad.wav            → Suara sedih
-├── angry.wav          → Suara marah
-├── scared.wav         → Suara takut
-├── dizzy.wav          → Suara pusing
-├── thinking.wav       → Suara berpikir
-├── listening.wav      → Suara mulai mendengar
-├── sleepy.wav         → Suara ngantuk
-├── surprised.wav      → Suara kaget
-├── confused.wav       → Suara bingung
-├── uncomfortable.wav  → Suara tidak nyaman
-├── love.wav           → Suara sayang
-├── connecting.wav     → Suara connecting
-├── ap_mode.wav        → Suara AP mode
-├── game_start.wav     → Suara mulai game
-├── game_win.wav       → Suara menang
-└── game_lose.wav      → Suara kalah
+├── welcome.wav        → Sound when first powered on
+├── idle.wav           → Occasional idle sound
+├── happy.wav          → Happy expression sound
+├── sad.wav            → Sad expression sound
+├── angry.wav          → Angry expression sound
+├── scared.wav         → Scared expression sound
+├── dizzy.wav          → Dizzy expression sound
+├── thinking.wav       → Thinking expression sound
+├── listening.wav      → Listening start sound
+├── sleepy.wav         → Sleepy expression sound
+├── surprised.wav      → Surprised expression sound
+├── confused.wav       → Confused expression sound
+├── uncomfortable.wav  → Uncomfortable expression sound
+├── love.wav           → Love expression sound
+├── connecting.wav     → WiFi connecting sound
+├── ap_mode.wav        → AP mode sound
+├── game_start.wav     → Game start sound
+├── game_win.wav       → Game win sound
+└── game_lose.wav      → Game lose sound
 ```
 
-### Cara Upload SPIFFS:
+### How to Upload SPIFFS:
 
-**Menggunakan Arduino IDE 1.x:**
-1. Install plugin "ESP32 Sketch Data Upload"
-2. Letakkan file WAV di folder `data/` (sejajar dengan `.ino`)
+**Using Arduino IDE 1.x:**
+1. Install the "ESP32 Sketch Data Upload" plugin
+2. Place WAV files in the `data/` folder (same level as `.ino`)
 3. Tools → ESP32 Sketch Data Upload
 
-**Menggunakan Arduino IDE 2.x:**
-1. Install plugin SPIFFS upload untuk IDE 2.x
-2. Atau gunakan OTA Web Dashboard (setelah Dola terkoneksi WiFi)
+**Using Arduino IDE 2.x:**
+1. Install the SPIFFS upload plugin for IDE 2.x
+2. Or use the OTA Web Dashboard (after DOLA is connected to WiFi)
 
-**Menggunakan OTA Dashboard:**
-1. Buka browser, akses `http://[IP_DOLA]`
-2. Upload file SPIFFS via web interface
+**Using OTA Dashboard:**
+1. Open browser, navigate to `http://[DOLA_IP]`
+2. Upload SPIFFS files via the web interface
 
-> **Catatan:** File sound bersifat opsional. Dola tetap berfungsi penuh tanpa file sound, hanya tidak ada efek suara ekspresi.
-
----
-
-## Cara Penggunaan
-
-### Ngobrol dengan Dola:
-1. Pastikan Dola dalam state **IDLE** (wajah normal)
-2. Bicara dengan suara cukup keras ke arah mikrofon
-3. Dola akan mendeteksi suara → wajah berubah ke "listening"
-4. Setelah selesai bicara (1.5 detik silence), Dola memproses → wajah "thinking"
-5. Dola menjawab via speaker → wajah "speaking"
-6. Selesai → wajah "happy" → kembali ke "idle"
-
-### Gesture Touch Sensor:
-
-| Gesture | Cara | Durasi |
-|---------|------|--------|
-| Tap | Sentuh & lepas cepat | < 300ms |
-| Double Tap | Sentuh 2x cepat | Jeda < 400ms |
-| Hold | Sentuh & tahan | > 800ms |
-
-### Reaksi Gerakan:
-
-| Gerakan | Reaksi Dola |
-|---------|-------------|
-| Guncang kuat | Pusing (mata spiral) → kembali normal setelah 3 detik |
-| Angkat/jatuhkan | Takut atau marah (random) → kembali normal setelah 4 detik |
-| Miringkan | Tidak nyaman (wajah berubah) |
-
-### Mode Tidur:
-- Setelah 30 detik idle tanpa interaksi, Dola masuk mode tidur (wajah sleepy)
-- Bicara keras untuk membangunkan Dola
+> **Note:** Sound files are optional. DOLA works fully without them — you just won't have expression sound effects.
 
 ---
 
-## Sistem Menu & Navigasi
+## How to Use
 
-### Masuk Menu:
-- **Double Tap** saat di home/idle → masuk menu utama
+### Talking to DOLA:
+1. Make sure DOLA is in **IDLE** state (normal face displayed)
+2. Speak loud enough towards the microphone
+3. DOLA detects voice → face changes to "listening"
+4. After you stop speaking (1.5s silence), DOLA processes → face shows "thinking"
+5. DOLA responds via speaker → face shows "speaking"
+6. Done → face shows "happy" → returns to "idle"
 
-### Navigasi Menu:
-- **Tap** = Pindah ke item berikutnya
-- **Double Tap** = Pilih/masuk item
-- **Hold** = Kembali ke menu sebelumnya
+### Touch Sensor Gestures:
 
-### Struktur Menu:
+| Gesture | How To | Duration |
+|---------|--------|----------|
+| Tap | Touch & release quickly | < 300ms |
+| Double Tap | Touch twice quickly | Gap < 400ms |
+| Hold | Touch & keep holding | > 800ms |
+
+### Motion Reactions:
+
+| Motion | DOLA's Reaction |
+|--------|-----------------|
+| Shake hard | Dizzy (spiral eyes) → returns to normal after 3 seconds |
+| Lift/drop | Scared or angry (random) → returns to normal after 4 seconds |
+| Tilt | Uncomfortable (face changes) |
+
+### Sleep Mode:
+- After 30 seconds idle without interaction, DOLA enters sleep mode (sleepy face)
+- Speak loudly to wake DOLA up
+
+---
+
+## Menu System & Navigation
+
+### Enter Menu:
+- **Double Tap** while at home/idle → enters main menu
+
+### Menu Navigation:
+- **Tap** = Move to next item
+- **Double Tap** = Select/enter item
+- **Hold** = Go back to previous menu
+
+### Menu Structure:
 
 ```
-Menu Utama
+Main Menu
 ├── Games
-│   ├── Tebak Angka
+│   ├── Guess the Number
 │   ├── Simon Says
 │   ├── Shake Challenge
 │   ├── Quiz Trivia
-│   ├── Batu Gunting Kertas
+│   ├── Rock Paper Scissors
 │   ├── Random Jokes
 │   └── Tamagotchi
 ├── Clock
@@ -368,88 +368,88 @@ Menu Utama
 ├── Settings
 │   ├── Volume (tap: +10, double tap: -10, hold: save & back)
 │   └── WiFi Reset
-├── Status (info WiFi, IP, SPIFFS, uptime)
+├── Status (WiFi info, IP, SPIFFS, uptime)
 └── About Dola
 ```
 
 ---
 
-## Game: Tamagotchi Ikan
+## Game: Fish Tamagotchi
 
-### Deskripsi:
-Pet virtual ikan yang hidup di layar OLED Dola. Rawat ikan kamu supaya tetap hidup dan berevolusi!
+### Description:
+A virtual fish pet that lives on DOLA's OLED screen. Take care of your fish to keep it alive and watch it evolve!
 
-### Kontrol:
+### Controls:
 
 | State | Tap | Double Tap | Hold | Shake |
 |-------|-----|------------|------|-------|
-| Aktif | Beri makan | Ajak main | Tidurkan | Elus |
-| Tidur | Bangunkan | Bangunkan | Keluar game | - |
-| Mati | Mulai lagi | Lihat kuburan | Keluar game | - |
-| Kuburan | Kembali | Kembali | Kembali | - |
+| Active | Feed | Play | Sleep | Pet/Stroke |
+| Sleeping | Wake up | Wake up | Exit game | - |
+| Dead | Restart (new egg) | View graveyard | Exit game | - |
+| Graveyard | Go back | Go back | Go back | - |
 
 ### Stats:
 
-| Stat | Deskripsi | Decay Rate |
-|------|-----------|------------|
-| Hunger (H) | Tingkat kenyang | -2 per 30 detik |
-| Happiness (P) | Tingkat kesenangan | -1 per 30 detik |
-| Energy (E) | Tingkat energi | -1 per 30 detik |
-| Health (♥) | Kesehatan | -1 jika hunger<20 atau happiness<15 |
+| Stat | Description | Decay Rate |
+|------|-------------|------------|
+| Hunger (H) | Fullness level | -2 per 30 seconds |
+| Happiness (P) | Happiness level | -1 per 30 seconds |
+| Energy (E) | Energy level | -1 per 30 seconds |
+| Health (♥) | Overall health | -1 if hunger<20 or happiness<15 |
 
-### Evolusi:
+### Evolution:
 
-| Stage | Bentuk | Syarat |
-|-------|--------|--------|
-| 0 - Telur | Bulat goyang | Awal |
-| 1 - Baby | Ikan kecil | 5 menit + health > 50 |
-| 2 - Teen | Ikan medium + sirip | 1 jam + health > 40 |
-| 3 - Adult | Ikan besar detail | 3 jam + health > 50 |
+| Stage | Appearance | Requirement |
+|-------|------------|-------------|
+| 0 - Egg | Round wobbling egg | Starting state |
+| 1 - Baby | Small fish | 5 minutes alive + health > 50 |
+| 2 - Teen | Medium fish with fins | 1 hour alive + health > 40 |
+| 3 - Adult | Large detailed fish | 3 hours alive + health > 50 |
 
-### Sistem Kematian:
-- Ikan mati jika Health mencapai 0
-- Penyebab: terlalu lapar (hunger < 20) atau terlalu sedih (happiness < 15) dalam waktu lama
-- Warning "!" muncul saat health < 20
+### Death System:
+- Fish dies when Health reaches 0
+- Causes: too hungry (hunger < 20) or too sad (happiness < 15) for extended periods
+- Warning "!" appears when health < 20
 
-### Setelah Mati:
-- **Tap** = Rebirth (mulai dari telur baru)
-- **Double Tap** = Lihat kuburan (5 ikan terakhir yang mati)
-- **Hold** = Keluar
+### After Death:
+- **Tap** = Rebirth (start from new egg)
+- **Double Tap** = View graveyard (last 5 dead fish)
+- **Hold** = Exit to Games menu
 
-### Fitur Tambahan:
-- **Highscore** — Rekor umur terlama tersimpan
-- **Death Counter** — Jumlah total kali ikan mati
-- **Gravestone** — Daftar 5 ikan terakhir yang mati (stage + umur)
-- **Auto-Save** — Stats tersimpan otomatis setiap 60 detik ke NVS
-- **Offline Decay** — Saat robot dimatikan, stats berkurang saat dinyalakan lagi
+### Additional Features:
+- **Highscore** — Longest lifespan record is saved
+- **Death Counter** — Total number of times fish has died
+- **Gravestone** — List of last 5 dead fish (stage + age)
+- **Auto-Save** — Stats automatically saved every 60 seconds to NVS
+- **Offline Decay** — When robot is powered off, stats decrease upon next power on
 
 ### Tips:
-- Rajin kasih makan (tap) supaya hunger tidak turun di bawah 20
-- Ajak main (double tap) supaya happiness tetap tinggi
-- Tidurin (hold) kalau energy rendah
-- Elus (shake) untuk bonus happiness
-- Jangan matikan robot terlalu lama, ikan bisa mati kelaparan!
+- Feed regularly (tap) to keep hunger above 20
+- Play often (double tap) to keep happiness high
+- Let it sleep (hold) when energy is low
+- Pet/stroke (shake) for bonus happiness
+- Don't leave the robot powered off too long — your fish might starve!
 
 ---
 
 ## OTA Update
 
-Setelah Dola terkoneksi WiFi, kamu bisa mengakses web dashboard untuk update firmware tanpa kabel USB.
+After DOLA is connected to WiFi, you can access the web dashboard to update firmware without a USB cable.
 
-### Akses Dashboard:
-1. Cari IP Dola di menu Status, atau cek Serial Monitor
-2. Buka browser: `http://[IP_DOLA]`
+### Access Dashboard:
+1. Find DOLA's IP in the Status menu, or check Serial Monitor
+2. Open browser: `http://[DOLA_IP]`
 
-### Fitur Dashboard:
-- Upload firmware baru (.bin)
-- Upload file SPIFFS (.bin)
-- Lihat info device (IP, SSID, uptime, memory)
-- Reset WiFi
+### Dashboard Features:
+- Upload new firmware (.bin)
+- Upload SPIFFS files (.bin)
+- View device info (IP, SSID, uptime, memory)
+- Reset WiFi credentials
 - Manage conversation memory
 
 ---
 
-## Struktur File
+## File Structure
 
 ```
 delly_robot_assistant/
@@ -458,133 +458,133 @@ delly_robot_assistant/
 │                              WiFi, audio recording, AI communication,
 │                              motion detection, state handlers
 │
-├── dola_faces.h             → 19 ekspresi wajah sebagai bitmap PROGMEM
-│                              + fungsi showFace() untuk render ke OLED
+├── dola_faces.h             → 19 facial expressions as PROGMEM bitmaps
+│                              + showFace() function to render on OLED
 │
 ├── dola_touch.h             → Touch sensor driver (TTP223 / Touch0)
 │                              Gesture detection: tap, double tap, hold
 │
 ├── dola_memory.h            → Conversation memory system
-│                              Save/load 20 pesan terakhir ke SPIFFS (JSON)
-│                              buildChatPayload() untuk context AI
+│                              Save/load last 20 messages to SPIFFS (JSON)
+│                              buildChatPayload() for AI context
 │
-├── dola_menu.h              → Menu system dengan navigasi touch
-│                              Render menu list di OLED
-│                              Handle gesture per screen
+├── dola_menu.h              → Menu system with touch navigation
+│                              Render menu list on OLED
+│                              Handle gestures per screen
 │
-├── dola_games.h             → 6 game: Tebak Angka, Simon Says, Shake,
-│                              Quiz Trivia, BSK, Random Jokes
+├── dola_games.h             → 6 games: Guess Number, Simon Says, Shake,
+│                              Quiz Trivia, Rock Paper Scissors, Random Jokes
 │                              Game dispatcher (startGame/updateGame)
 │
-├── dola_tamagotchi.h        → Game Tamagotchi Ikan
-│                              Bitmap ikan (4 stage × 2 frame)
-│                              Stats, decay, evolusi, save/load NVS
+├── dola_tamagotchi.h        → Fish Tamagotchi game
+│                              Fish bitmaps (4 stages × 2 animation frames)
+│                              Stats, decay, evolution, NVS save/load
 │                              Gravestone system, highscore
 │
 ├── dola_clock.h             → NTP clock (WIB) + countdown timer
-│                              Tampilan jam di OLED
-│                              Timer dengan alarm
+│                              Clock display on OLED
+│                              Timer with alarm
 │
 ├── dola_ota.h               → OTA web dashboard
-│                              HTTP server untuk firmware update
+│                              HTTP server for firmware updates
 │                              SPIFFS upload, WiFi reset, memory management
 │
-├── data/                    → Folder SPIFFS (file WAV sound)
+├── data/                    → SPIFFS folder (WAV sound files)
 │   └── (*.wav files)
 │
-└── README.md                → Dokumentasi ini
+└── README.md                → This documentation
 ```
 
 ---
 
 ## Troubleshooting
 
-### Dola tidak bisa connect WiFi:
-- Pastikan SSID dan password benar
-- Pastikan WiFi 2.4GHz (ESP32 tidak support 5GHz)
-- Jika gagal, Dola otomatis kembali ke AP Mode → setup ulang
+### DOLA can't connect to WiFi:
+- Make sure SSID and password are correct
+- Ensure WiFi is 2.4GHz (ESP32 does not support 5GHz)
+- If connection fails, DOLA automatically returns to AP Mode → setup again
 
-### OLED tidak menyala:
-- Cek koneksi I2C (SDA=GPIO21, SCL=GPIO22)
-- Pastikan alamat I2C benar (0x3C)
-- Coba scan I2C dengan sketch I2C Scanner
+### OLED not turning on:
+- Check I2C connections (SDA=GPIO21, SCL=GPIO22)
+- Verify I2C address is correct (0x3C)
+- Try scanning I2C with an I2C Scanner sketch
 
-### Mikrofon tidak mendeteksi suara:
-- Cek koneksi INMP441 (SCK=26, WS=25, SD=33)
-- Pastikan pin L/R terhubung ke GND (left channel)
-- Bicara lebih keras atau dekatkan ke mikrofon
-- Cek Serial Monitor untuk debug level audio
+### Microphone not detecting sound:
+- Check INMP441 connections (SCK=26, WS=25, SD=33)
+- Make sure L/R pin is connected to GND (left channel)
+- Speak louder or move closer to the microphone
+- Check Serial Monitor for audio level debug info
 
-### Speaker tidak bersuara:
-- Cek koneksi MAX98357 (BCLK=27, LRC=14, DIN=12)
-- Pastikan VIN terhubung ke 5V (bukan 3.3V)
-- Cek volume di Settings (default 120%)
-- Pastikan speaker terhubung ke output MAX98357
+### Speaker not producing sound:
+- Check MAX98357 connections (BCLK=27, LRC=14, DIN=12)
+- Make sure VIN is connected to 5V (not 3.3V)
+- Check volume in Settings (default 120%)
+- Ensure speaker is connected to MAX98357 output terminals
 
-### Accelerometer tidak terdeteksi:
-- Cek koneksi I2C (shared dengan OLED)
-- Pastikan CS pin ADXL345 terhubung ke 3.3V (I2C mode)
-- Pastikan SDO terhubung ke GND (address 0x53)
+### Accelerometer not detected:
+- Check I2C connections (shared with OLED)
+- Make sure ADXL345 CS pin is connected to 3.3V (I2C mode)
+- Make sure SDO is connected to GND (address 0x53)
 
-### AI tidak merespons:
-- Pastikan WiFi terkoneksi (cek di menu Status)
-- Pastikan API key valid
-- Cek Serial Monitor untuk error code HTTP
-- Pastikan endpoint API accessible
+### AI not responding:
+- Ensure WiFi is connected (check in Status menu)
+- Verify API key is valid
+- Check Serial Monitor for HTTP error codes
+- Make sure API endpoint is accessible from your network
 
-### Tamagotchi data hilang:
-- Data tersimpan di NVS (non-volatile), seharusnya tidak hilang
-- Jika flash di-erase total, data akan reset
-- Gunakan OTA update (bukan full flash erase) untuk menjaga data
+### Tamagotchi data lost:
+- Data is stored in NVS (non-volatile), should not be lost
+- If flash is fully erased, data will reset
+- Use OTA update (not full flash erase) to preserve data
 
-### Upload gagal:
-- Pastikan board "ESP32 Dev Module" dipilih
-- Tekan tombol BOOT di ESP32 saat upload dimulai
-- Coba turunkan Upload Speed ke 115200
-- Pastikan driver USB-to-Serial terinstall (CP2102/CH340)
+### Upload fails:
+- Make sure "ESP32 Dev Module" board is selected
+- Press the BOOT button on ESP32 when upload starts
+- Try lowering Upload Speed to 115200
+- Make sure USB-to-Serial driver is installed (CP2102/CH340)
 
 ---
 
 ## Power Supply
 
-### Kebutuhan Minimum:
-- Tegangan: **5V**
-- Arus: **1A minimum** (rekomendasi 1.5A)
+### Minimum Requirements:
+- Voltage: **5V**
+- Current: **1A minimum** (1.5A recommended)
 
-### Konsumsi Daya:
+### Power Consumption:
 
-| Mode | Konsumsi |
-|------|----------|
+| Mode | Consumption |
+|------|-------------|
 | Idle (OLED + WiFi standby) | ~270mA |
-| Ngobrol (WiFi + Speaker) | ~550mA |
-| Peak (semua aktif) | ~700mA |
+| Chatting (WiFi + Speaker) | ~550mA |
+| Peak (all active) | ~700mA |
 
-### Opsi Power Supply:
+### Power Supply Options:
 
-| Opsi | Keterangan |
-|------|------------|
-| USB Power Bank | 5V/1A minimum, pastikan tidak auto-off |
-| Adaptor USB 5V/1.5A | Untuk penggunaan statis |
-| 18650 + TP4056 + Boost 5V | Portable & rechargeable |
-| 2x 18650 + BMS + Buck 5V | Kapasitas lebih besar |
+| Option | Notes |
+|--------|-------|
+| USB Power Bank | 5V/1A minimum, make sure it doesn't auto-off |
+| USB Adapter 5V/1.5A | For stationary use |
+| 18650 + TP4056 + 5V Boost | Portable & rechargeable |
+| 2x 18650 + BMS + 5V Buck | Larger capacity |
 
-### Estimasi Daya Tahan Baterai:
+### Battery Life Estimates:
 
-| Kapasitas | Penggunaan Normal | Penggunaan Berat |
-|-----------|-------------------|------------------|
-| 1500mAh | 3-4 jam | 2-2.5 jam |
-| 3000mAh | 6-8 jam | 4-5 jam |
-| 5000mAh | 10-12 jam | 7-8 jam |
-
----
-
-## Lisensi
-
-Project ini dibuat untuk keperluan edukasi dan personal. Silakan gunakan, modifikasi, dan kembangkan sesuai kebutuhan.
+| Capacity | Normal Use | Heavy Use |
+|----------|------------|-----------|
+| 1500mAh | 3-4 hours | 2-2.5 hours |
+| 3000mAh | 6-8 hours | 4-5 hours |
+| 5000mAh | 10-12 hours | 7-8 hours |
 
 ---
 
-## Kontributor
+## License
+
+This project is made for educational and personal purposes. Feel free to use, modify, and develop it according to your needs.
+
+---
+
+## Contributor
 
 - **Ramadanil** — Creator & Developer
 
