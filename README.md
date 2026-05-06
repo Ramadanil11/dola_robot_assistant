@@ -590,4 +590,4 @@ Project ini dibuat untuk keperluan edukasi dan personal. Silakan gunakan, modifi
 
 ---
 
-*Made with love~ (^_^)*
+*Made with brainnn~ (^_^)*
